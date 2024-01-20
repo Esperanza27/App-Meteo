@@ -3,8 +3,8 @@ import { weatherThunk, forecastThunk } from "./meteoThunks";
 
 const initialState = {
   value: 0,
-  weather: [],
-  forecast: [],
+  weather: {},
+  forecast: {},
   error: null,
 };
 
@@ -15,7 +15,6 @@ const meteoSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(weatherThunk.fulfilled, (state, { payload }) => {
       state.weather = payload;
-      console.log(payload);
     });
     builder.addCase(weatherThunk.rejected, (state, action) => {
       if (action.payload) {

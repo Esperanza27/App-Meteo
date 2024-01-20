@@ -1,76 +1,148 @@
 import { useSelector, useDispatch } from "react-redux";
-import MyNavbar from "../../components/MyNavbar";
-import MyCard from "../../components/MyCard";
-import Container from "react-bootstrap/esm/Container";
-/* import { decrement, increment } from "../../store/meteoSlice"; */
-/* import { useEffect } from "react";
-import { weatherThunk, forecastThunk } from "../../store/meteoThunks"; */
+import MyNavbar from "../../components/myNavbar/MyNavbar";
+import MyCard from "../../components/myCard/MyCard";
+import MySidebar from "../../components/mySidebar/MySidebar";
+import { months } from "../../store/mocks/weatherMock";
+import { useCallback, useMemo, useEffect } from "react";
+import { WindIcon } from "../../assets/icons/WindIcon";
+import { weatherThunk, forecastThunk } from "../../store/meteoThunks";
+import { MyLoader } from "../../components/myLoader/MyLoader";
 
-export function Home() {
-  /*   
-  const dispatch = useDispatch(); 
+const Home = () => {
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-    dispatch(weatherThunk({ id: "genova" }));
-    dispatch(forecastThunk());
-  }, []); 
+  useEffect(() => {
+    dispatch(weatherThunk({ id: "Roma" }));
+  }, [dispatch]);
 
-     const weather = useSelector((state) => state.meteo.weather);
-  const forecast = useSelector((state) => state.meteo.forecast); 
+  const weather = useSelector((state) => state.meteo.weather);
 
-     console.log("data weather ", weather);
-  console.log("data forecast ", forecast); 
+  useEffect(() => {
+    if (Object.keys(weather).length) {
+      dispatch(forecastThunk());
+    }
+  }, [dispatch, weather]);
 
-   const error = useSelector((state) => state.meteo.error); 
-   
-   */
+  const forecast = useSelector((state) => state.meteo.forecast);
+
+  console.log("data forecast ", forecast);
+
+  const onChange = useCallback(
+    (e) => {
+      const city = e.target.value;
+
+      if (city) {
+        dispatch(weatherThunk({ id: city }));
+      }
+    },
+    [dispatch]
+  );
+
+  const {
+    wind: { gust = "", speed = "" } = {},
+    main: { temp = "", temp_min = "", humidity = "" } = {},
+  } = weather;
+
+  const dateToday = useMemo(() => {
+    const date = new Date();
+
+    const monthNum = date.getMonth();
+    const yearNum = date.getFullYear();
+
+    const originalString = date.toDateString();
+    const charToInsert = ",";
+    const indexToInsertAt = 3;
+
+    return {
+      current: `${months[monthNum]} ${yearNum}`,
+      dateDetails:
+        originalString.slice(0, indexToInsertAt) +
+        charToInsert +
+        originalString.slice(indexToInsertAt),
+    };
+  }, []);
+
+  const cardData = useMemo(() => {
+    return [
+      {
+        icon: <WindIcon />,
+        type: "Wind Speed",
+        currentValue: `${speed} km/h`,
+        dynamicValue: `${gust} km/h`,
+      },
+      {
+        icon: <WindIcon />,
+        type: "Rain Chance",
+        currentValue: "0%",
+        dynamicValue: "0%",
+      },
+      {
+        icon: <WindIcon />,
+        type: "Temperature",
+        currentValue: `${Math.round(temp)}°C`,
+        dynamicValue: `${temp_min}°C ↑`,
+      },
+      {
+        icon: <WindIcon />,
+        type: "Humidity",
+        currentValue: `${humidity}%`,
+        dynamicValue: `${humidity}%`,
+      },
+    ];
+  }, [humidity, temp, temp_min, gust, speed]);
+
+  if (!Object.keys(weather).length) {
+    return <MyLoader />;
+  }
 
   return (
-    <div className="container-fluid ">
-      <div className="row">
-        <div className="col-12 col-md-6 bg-primary">
-          <div className="row ">
-            <div className="col-12 px-0 ">
-              <MyNavbar />
-            </div>
-
-            <div className="col-xs-12 col-md-6 dashboard" >
-             <Container fluid >
-             <div className="row px-0 gap-2">
-                <div className="col-6 ">
-                    <MyCard/>
-                </div>
-                 <div className="col-6 ">
-                    <MyCard/>
-                </div>
-               {/*   <div className="col-12 col-md-5">
-                    <MyCard/>
-                </div>
-                <div className="col-12 col-md-5">
-                    <MyCard/>
-                </div>
-                <div className="col-12 col-md-5">
-                    <MyCard/>
-                </div>
-                <div className="col-12 col-md-5">
-                    <MyCard/>
-                </div> */}
+    <div className="container-fluid bg-danger" style={{ height: "90vh" }}>
+      <div className="row" style={{ height: "100%" }}>
+        <div className="col-sm-12">
+          <div className="row" style={{ height: "100%" }}>
+            <div className="col-xs-12 col-md-8 bg-info">
+              <div className="row bg-white py-2">
+                <MyNavbar date={dateToday} onChange={onChange} />
               </div>
-             </Container>
+              <div
+                className="row bg-info py-1 "
+                style={{
+                  height: "40%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {cardData.map((card, i) => (
+                  <div
+                    key={i}
+                    className="col-xs-10 py-0 px-1 d-flex"
+                    style={{
+                      width: "49.5%",
+                      alignItems: "center",
+                      height: "46.5%",
+                    }}
+                  >
+                    <MyCard {...card} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="row bg-secondary" style={{ height: "40%" }}>
+                c: graph
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="col-12 col-md-6 bg-danger">
-          <div
-           /*  style={{
-              minWidth: "50%",
-              height: "90vh",
-            }} */
-          >
-            sono side
+            <div
+              className="col-xs-12 col-md-4 bg-success"
+              style={{ height: "100%" }}
+            >
+              <MySidebar {...weather} />
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Home;

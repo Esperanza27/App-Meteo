@@ -1,7 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { forecastMock } from "./mocks/forecastMock";
+import { weatherMock } from "./mocks/weatherMock";
 
 const API_KEY = "17945c47c483847f73889aaad31ff613";
-const coord = { lon: 12.4839, lat: 41.8947 };
 
 const weatherThunk = createAsyncThunk(
   "weather/get",
@@ -9,33 +10,51 @@ const weatherThunk = createAsyncThunk(
     console.log("weatherThunk", payload);
 
     const { id = "Roma" } = payload;
-    const response = await fetch(
+
+    const response = weatherMock /* await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${id},it&APPID=${API_KEY}`
-    );
+    ); */
 
     if (response.status === 400) {
       return thunkApi.rejectWithValue(await response.json());
     }
 
-    return await response.json();
+    return weatherMock; //await response.json();
   }
 );
 
 const forecastThunk = createAsyncThunk(
   "forecast/get",
-  async (payload, thunkApi) => {
+  async (payload, { getState, rejectWithValue }) => {
     /* const { id = '' } = payload */
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${coord.lat}&lon=${coord.lon}&appid=${API_KEY}&units=metric`,
-      {
-        method: "GET",
+
+    const {
+      meteo: { weather },
+    } = getState(); // console.log(getState().meteo.weather);
+
+    console.log(weather);
+
+    const {
+      coord: { lon = 0, lat = 0 },
+    } = weather;
+
+    if (Object.keys(weather).length) {
+      const response = forecastMock;
+      /* await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`,
+        {
+          method: "GET",
+        }
+      ); */
+
+      if (response.status === 400) {
+        // Return the known error for future handling
+        return rejectWithValue(await response.json());
       }
-    );
-    if (response.status === 400) {
-      // Return the known error for future handling
-      return thunkApi.rejectWithValue(await response.json());
+      return forecastMock //await response.json();
+    } else {
+      return {};
     }
-    return await response.json();
   }
 );
 
