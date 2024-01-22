@@ -1,70 +1,161 @@
-/* import { useSelector, useDispatch } from "react-redux"; */
-import MyNavbar from "../../components/myNavbar/MyNavbar";
+import { useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import { useCallback, useMemo } from "react";
+import {WindIcon} from "../../assets/icons/WindIcon"; 
 import MyCard from "../../components/myCard/MyCard";
-import MySidebar from "../../components/mySidebar/MySidebar";
-
-/* import { decrement, increment } from "../../store/meteoSlice"; */
-/* import { useEffect } from "react";
-import { weatherThunk, forecastThunk } from "../../store/meteoThunks"; */
-
+import NavbarBrand from "react-bootstrap/esm/NavbarBrand";
+import CloseButton from "react-bootstrap/esm/CloseButton";
+import Table from 'react-bootstrap/Table';
+import { useNavigate } from "react-router-dom";
+/* import iconWind from "../../assets/icons/storm.png";
+import iconTemperature from "../../assets/icons/temperature.png"; */
 const ResultPage = () => {
-  /*   
-  const dispatch = useDispatch(); 
+  const weather = useSelector((state) => state.meteo.weather);
+  const forecast = useSelector((state) => state.meteo.forecast);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-    dispatch(weatherThunk({ id: "genova" }));
-    dispatch(forecastThunk());
-  }, []); 
+  const { sys, name, main, wind } = weather;
 
-     const weather = useSelector((state) => state.meteo.weather);
-  const forecast = useSelector((state) => state.meteo.forecast); 
+  const getTime = useCallback((time) => {
+    return `${new Date(time).getHours()}:${new Date(time).getMinutes()}`;
+  }, []);
 
-     console.log("data weather ", weather);
-  console.log("data forecast ", forecast); 
+  const cardData3 = useMemo(() => {
+    return [
+      {
+        icon:<WindIcon />, 
+        type: "sunrise",
+        currentValue: `${getTime(sys?.sunrise)} `,
+        dynamicValue: `2 hours ago`,
+      },
+      {
+        icon: <WindIcon />,
+        type: "sunset",
+        currentValue: `${getTime(sys?.sunset)}`,
+        dynamicValue: `In 8 hours`,
+      },
+      {
+        icon: <WindIcon />,
+        type: "Wind Speed",
+        currentValue: `${wind?.speed} km/h`,
+        dynamicValue: `${wind?.gust} km/h`,
+      },
+      {
+        icon: <WindIcon />,
+        type: "Rain Chance",
+        currentValue: "0%",
+        dynamicValue: "0%",
+      },
+      {
+        icon: <WindIcon />,
+        type: "Temperature",
+        currentValue: `${Math.round(main?.temp)}°C`,
+        dynamicValue: `${main?.temp_min}°C ↑`,
+      },
+      {
+        icon: <WindIcon />,
+        type: "Humidity",
+        currentValue: `${main?.humidity}%`,
+        dynamicValue: `${main?.humidity}%`,
+      },
+    ];
+  }, [getTime, sys?.sunrise, sys?.sunset]);
 
-   const error = useSelector((state) => state.meteo.error); 
-   
-*/
+  console.log("data weather ", weather);
+  console.log("data forecast ", forecast);
 
   return (
-    <div className="container-fluid bg-danger" style={{ height: "90vh" }}>
-      <div className="row" style={{ height: "100%" }}>
-        <div className="col-sm-12">
-          <div className="row" style={{ height: "100%" }}>
-            <div className="col-xs-12 col-md-8 bg-info">
-              <div className="row bg-white py-2">
-                <MyNavbar />
-              </div>
-              <div className="row bg-info py-1 " style={{ height: "40%", display: 'flex', justifyContent: 'center', alignItems:"center"}}>
+    <div className="container py-3 " style={{ height: "90vh" }}>
+      <div className="d-flex justify-content-between">
+        <NavbarBrand href="/">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-house-heart-fill"
+            viewBox="0 0 16 16"
+          >
+            <path d="M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.707L8 2.207 1.354 8.853a.5.5 0 1 1-.708-.707z" />
+            <path d="m14 9.293-6-6-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5zm-6-.811c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018" />
+          </svg>{" "}
+          HOME
+        </NavbarBrand>
 
-                <div className="col-xs-10 py-0 px-1 d-flex " style={{ width: "49.5%", alignItems:"center", height: "46.5%"}}>
-                  <MyCard />
-                </div>
-                <div className="col-xs-10 py-0 px-1 d-flex rounded" style={{ width: "49.5%", alignItems:"center", height: "46.5%"}}>
-                  <MyCard />
-                </div>
-                <div className="col-xs-10 py-0 px-1 d-flex rounded" style={{ width: "49.5%", alignItems:"center", height: "46.5%"}}>
-                  <MyCard />
-                </div>
-                <div className="col-xs-10 py-0 px-1 d-flex rounded" style={{ width: "49.5%", alignItems:"center", height: "46.5%"}}>
-                  <MyCard />
-                </div>
-              </div>
+        <h1>{name}</h1>
 
-              <div className="row bg-secondary" style={{ height: "40%" }}>
-                c: graph
-              </div>
-            </div>
-            <div
-              className="col-xs-12 col-md-4 bg-success"
-              style={{ height: "100%" }}
-            >
-              <MySidebar/>
-            </div>
-          </div>
+        <div className="d-flex gap-2 text-center">
+          <p>{getTime(new Date().getTime())}</p>
+        <CloseButton onClick={()=>navigate("/")}/>
         </div>
+      </div>
+      <div className=" d-flex flex-wrap gap-3 justify-content-center my-3">
+        {cardData3.map((card, i) => (
+          <div
+            key={i}
+            className="col-xs-10 py-0 px-1 d-flex"
+            style={{
+              width: "49.5%",
+              alignItems: "center",
+              height: "46.5%",
+            }}
+          >
+            <MyCard {...card} />
+          </div>
+        ))}
+      </div>
+      <div>
+      <Table responsive="sm" className=" my-3">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Table heading</th>
+            <th>Table heading</th>
+            <th>Table heading</th>
+            <th>Table heading</th>
+            <th>Table heading</th>
+            <th>Table heading</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+          </tr>
+        </tbody>
+      </Table>
       </div>
     </div>
   );
 };
+ResultPage.propTypes = {
+  sys: PropTypes.object,
+  name: PropTypes.string,
+  main: PropTypes.object,
+  wind: PropTypes.object,
+};
+
 export default ResultPage;

@@ -27,9 +27,9 @@ const MySidebar = ({ sys, name, main }) => {
 
   return (
     <div className="my-3 py-2 mx-1 d-flex flex-column gap-5">
-      <div className="d-flex justify-content-between">
-        <p>{name}</p>
-        <p>{getTime(new Date().getTime())}</p>
+      <div className="d-flex justify-content-between ">
+        <p className="m-0">{name}</p>
+        <p className="m-0">{getTime(new Date().getTime())}</p>
       </div>
       <div>
         <h5 className="my-0 ">{`${Math.round(main?.temp)}°C`}</h5>

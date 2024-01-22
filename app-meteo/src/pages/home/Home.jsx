@@ -7,6 +7,7 @@ import { useCallback, useMemo, useEffect } from "react";
 import { WindIcon } from "../../assets/icons/WindIcon";
 import { weatherThunk, forecastThunk } from "../../store/meteoThunks";
 import { MyLoader } from "../../components/myLoader/MyLoader";
+import {  useNavigate } from "react-router-dom";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -27,15 +28,19 @@ const Home = () => {
 
   console.log("data forecast ", forecast);
 
+ const navigate = useNavigate();
+
   const onChange = useCallback(
     (e) => {
       const city = e.target.value;
 
+
       if (city) {
         dispatch(weatherThunk({ id: city }));
+        navigate('/result', {...weather});
       }
     },
-    [dispatch]
+    [dispatch, navigate]
   );
 
   const {
@@ -96,7 +101,7 @@ const Home = () => {
   }
 
   return (
-    <div className="container-fluid bg-danger" style={{ height: "90vh" }}>
+    <div className="container-fluid" style={{ height: "90vh" }}>
       <div className="row" style={{ height: "100%" }}>
         <div className="col-sm-12">
           <div className="row" style={{ height: "100%" }}>
@@ -133,7 +138,7 @@ const Home = () => {
               </div>
             </div>
             <div
-              className="col-xs-12 col-md-4 bg-success"
+              className="col-xs-12 col-md-4"
               style={{ height: "100%" }}
             >
               <MySidebar {...weather} />
