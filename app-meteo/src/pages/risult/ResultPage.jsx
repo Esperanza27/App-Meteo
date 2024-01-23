@@ -1,29 +1,34 @@
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { useCallback, useMemo } from "react";
-import {WindIcon} from "../../assets/icons/WindIcon"; 
+import { useCallback, useEffect, useMemo } from "react";
+import { WindIcon } from "../../assets/icons/WindIcon";
 import MyCard from "../../components/myCard/MyCard";
 import NavbarBrand from "react-bootstrap/esm/NavbarBrand";
 import CloseButton from "react-bootstrap/esm/CloseButton";
-import Table from 'react-bootstrap/Table';
+/* import Table from "react-bootstrap/Table"; */
 import { useNavigate } from "react-router-dom";
-/* import iconWind from "../../assets/icons/storm.png";
-import iconTemperature from "../../assets/icons/temperature.png"; */
+import iconWind from "../../assets/icons/storm.png";
+import MyTable from "../../components/myTable/MyTable";
+/* import iconTemperature from "../../assets/icons/temperature.png"; */
 const ResultPage = () => {
   const weather = useSelector((state) => state.meteo.weather);
   const forecast = useSelector((state) => state.meteo.forecast);
   const navigate = useNavigate();
 
   const { sys, name, main, wind } = weather;
+  const f = { ...forecast };
+  const currentDays = f.list.slice(0, 7);
+  console.log(currentDays);
 
   const getTime = useCallback((time) => {
     return `${new Date(time).getHours()}:${new Date(time).getMinutes()}`;
   }, []);
+  
 
   const cardData3 = useMemo(() => {
     return [
       {
-        icon:<WindIcon />, 
+        icon: <img src={iconWind} style={{ width: "16px", height: "16px" }} />,
         type: "sunrise",
         currentValue: `${getTime(sys?.sunrise)} `,
         dynamicValue: `2 hours ago`,
@@ -62,7 +67,7 @@ const ResultPage = () => {
   }, [getTime, sys?.sunrise, sys?.sunset]);
 
   console.log("data weather ", weather);
-  console.log("data forecast ", forecast);
+  console.log("data forecast ", forecast, new Date(1705676400).getDay());
 
   return (
     <div className="container py-3 " style={{ height: "90vh" }}>
@@ -86,7 +91,7 @@ const ResultPage = () => {
 
         <div className="d-flex gap-2 text-center">
           <p>{getTime(new Date().getTime())}</p>
-        <CloseButton onClick={()=>navigate("/")}/>
+          <CloseButton onClick={() => navigate("/")} />
         </div>
       </div>
       <div className=" d-flex flex-wrap gap-3 justify-content-center my-3">
@@ -105,48 +110,21 @@ const ResultPage = () => {
         ))}
       </div>
       <div>
-      <Table responsive="sm" className=" my-3">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Table heading</th>
-            <th>Table heading</th>
-            <th>Table heading</th>
-            <th>Table heading</th>
-            <th>Table heading</th>
-            <th>Table heading</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-          </tr>
-        </tbody>
-      </Table>
+        {currentDays?.map((li, i) => {
+        let day= new Date(li?.dt*1000).toDateString().slice(0,3)
+         return(
+          <div key={i}>
+            <MyTable
+              day={day} 
+              humidity={li?.main.humidity}
+              icon1={li?.weather[0].icon}
+              tempMax={li?.main.temp_max}
+              tempMin={li?.main.temp_min}
+            />
+          </div>
+         )
+          
+        })}
       </div>
     </div>
   );
