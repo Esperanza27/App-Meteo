@@ -113,7 +113,7 @@ const ResultPage = () => {
         {currentDays?.map((li, i) => {
         let day= new Date(li?.dt*1000).toDateString().slice(0,3)
          return(
-          <div key={i}>
+          <div key={i} >
             <MyTable
               day={day} 
               humidity={li?.main.humidity}

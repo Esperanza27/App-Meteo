@@ -8,6 +8,7 @@ import { WindIcon } from "../../assets/icons/WindIcon";
 import { weatherThunk, forecastThunk } from "../../store/meteoThunks";
 import { MyLoader } from "../../components/myLoader/MyLoader";
 import {  useNavigate } from "react-router-dom";
+import MyGraphic from "../../components/myGraphic/MyGraphic";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -25,8 +26,10 @@ const Home = () => {
   }, [dispatch, weather]);
 
   const forecast = useSelector((state) => state.meteo.forecast);
-
-  console.log("data forecast ", forecast);
+/* //dati per graphic
+  const dataF= {...forecast};
+  const dataForecast= dataF.list.slice(0, 7);
+  console.log(dataForecast.temp); */
 
  const navigate = useNavigate();
 
@@ -105,12 +108,12 @@ const Home = () => {
       <div className="row" style={{ height: "100%" }}>
         <div className="col-sm-12">
           <div className="row" style={{ height: "100%" }}>
-            <div className="col-xs-12 col-md-8 bg-info">
-              <div className="row bg-white py-2">
+            <div className="col-xs-12 col-md-8">
+              <div className="row py-2">
                 <MyNavbar date={dateToday} onChange={onChange} />
               </div>
               <div
-                className="row bg-info py-1 "
+                className="row py-1 "
                 style={{
                   height: "40%",
                   display: "flex",
@@ -133,14 +136,13 @@ const Home = () => {
                 ))}
               </div>
 
-              <div className="row bg-secondary" style={{ height: "40%" }}>
-                c: graph
+              <div className="row mx-1" style={{ height: "40%" }}>
+                <MyGraphic />
               </div>
             </div>
             <div
               className="col-xs-12 col-md-4"
-              style={{ height: "100%" }}
-            >
+              style={{ height: "100%" }} >
               <MySidebar {...weather} />
             </div>
           </div>

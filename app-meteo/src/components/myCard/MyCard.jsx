@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 function MyCard({ icon, type, currentValue, dynamicValue }) {
   
   return (
-    <div className="d-flex justify-content-between align-items-center gap-4 bg-danger-subtle mx-0 p-3 h-100 w-100 border rounded">
+    <div className="d-flex justify-content-between align-items-center gap-4 mx-0 p-3 h-100 w-100 border rounded">
       <div>
         {icon}
       </div>

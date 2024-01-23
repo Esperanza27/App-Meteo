@@ -8,8 +8,8 @@ import { cities } from "../../store/mocks/weatherMock";
 const MyNavbar = ({ date, onChange }) => {
 
   return (
-    <Container fluid className="bg-danger px-0 mx-0 ">
-      <Navbar className="bg-body-tertiary">
+    <Container className="px-0 mx-0 ">
+      <Navbar className="border border-1 rounded-3 mx-1 px-1">
         <Container>
           <div className="row d-flex justify-content-between w-100 align-content-center">
             <div className="col-6 d-flex align-content-center">
@@ -23,6 +23,7 @@ const MyNavbar = ({ date, onChange }) => {
                 aria-label="Default select example"
                 style={{ height: "40px" }}
                 onChange={onChange}
+                className="bg-transparent"
               >
                 <option value={''}>Choose a city...</option>
                 {cities.map((city, i) => (
