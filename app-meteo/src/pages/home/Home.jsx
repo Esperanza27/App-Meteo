@@ -7,7 +7,7 @@ import { useCallback, useMemo, useEffect } from "react";
 import { WindIcon } from "../../assets/icons/WindIcon";
 import { weatherThunk, forecastThunk } from "../../store/meteoThunks";
 import { MyLoader } from "../../components/myLoader/MyLoader";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MyGraphic from "../../components/myGraphic/MyGraphic";
 
 const Home = () => {
@@ -26,21 +26,20 @@ const Home = () => {
   }, [dispatch, weather]);
 
   const forecast = useSelector((state) => state.meteo.forecast);
-/* //dati per graphic
+  /* //dati per graphic
   const dataF= {...forecast};
   const dataForecast= dataF.list.slice(0, 7);
   console.log(dataForecast.temp); */
 
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const onChange = useCallback(
     (e) => {
       const city = e.target.value;
 
-
       if (city) {
         dispatch(weatherThunk({ id: city }));
-        navigate('/result', {...weather});
+        navigate("/result", { ...weather });
       }
     },
     [dispatch, navigate]
@@ -104,16 +103,16 @@ const Home = () => {
   }
 
   return (
-    <div className="container-fluid" style={{ height: "90vh" }}>
+    <div className="container-fluid" /* style={{ height: "90vh" }} */>
       <div className="row" style={{ height: "100%" }}>
         <div className="col-sm-12">
-          <div className="row" style={{ height: "100%" }}>
-            <div className="col-xs-12 col-md-8">
-              <div className="row py-2">
+          <div className="row " style={{ height: "100%" }}>
+            <div className="col-xs-12 d-flex flex-column gap-1 my-2 col-md-8">
+              <div className="row ">
                 <MyNavbar date={dateToday} onChange={onChange} />
               </div>
               <div
-                className="row py-1 "
+                className="row "
                 style={{
                   height: "40%",
                   display: "flex",
@@ -124,11 +123,12 @@ const Home = () => {
                 {cardData.map((card, i) => (
                   <div
                     key={i}
-                    className="col-xs-10 py-0 px-1 d-flex"
+                    className="col-xs-10 py-0 d-flex"
                     style={{
                       width: "49.5%",
                       alignItems: "center",
                       height: "46.5%",
+                      margin: "1px"
                     }}
                   >
                     <MyCard {...card} />
@@ -136,13 +136,17 @@ const Home = () => {
                 ))}
               </div>
 
-              <div className="row mx-1" style={{ height: "40%" }}>
+              <div
+                className="row text-center m-0 d-flex justify-content-center border rounded h-50"
+                /* style={{ height: "34%" }} */
+              >
                 <MyGraphic />
               </div>
             </div>
             <div
-              className="col-xs-12 col-md-4"
-              style={{ height: "100%" }} >
+              className="col-xs-12 col-md-4 "
+              /* style={{ height: "100%" }} */
+            >
               <MySidebar {...weather} />
             </div>
           </div>

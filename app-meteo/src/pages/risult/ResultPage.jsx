@@ -9,7 +9,12 @@ import CloseButton from "react-bootstrap/esm/CloseButton";
 import { useNavigate } from "react-router-dom";
 import iconWind from "../../assets/icons/storm.png";
 import MyTable from "../../components/myTable/MyTable";
-/* import iconTemperature from "../../assets/icons/temperature.png"; */
+ import iconTemperature from "../../assets/icons/temperature.png"; 
+ import iconSunrise from "../../assets/icons/sunrise (1).png"; 
+ import iconSunset from "../../assets/icons/sunset.png"; 
+ import iconRain from "../../assets/icons/rain.png"; 
+ import iconHumidity from "../../assets/icons/humidity.png"; 
+
 const ResultPage = () => {
   const weather = useSelector((state) => state.meteo.weather);
   const forecast = useSelector((state) => state.meteo.forecast);
@@ -28,37 +33,37 @@ const ResultPage = () => {
   const cardData3 = useMemo(() => {
     return [
       {
-        icon: <img src={iconWind} style={{ width: "16px", height: "16px" }} />,
+        icon: <img src={iconSunrise} style={{ width: "25px", height: "25px" }} />,
         type: "sunrise",
         currentValue: `${getTime(sys?.sunrise)} `,
         dynamicValue: `2 hours ago`,
       },
       {
-        icon: <WindIcon />,
+        icon: <img src={iconSunset} style={{ width: "30px", height: "30px" }} />,
         type: "sunset",
         currentValue: `${getTime(sys?.sunset)}`,
         dynamicValue: `In 8 hours`,
       },
       {
-        icon: <WindIcon />,
+        icon: <img src={iconWind} style={{ width: "25px", height: "25px" }} />,
         type: "Wind Speed",
         currentValue: `${wind?.speed} km/h`,
         dynamicValue: `${wind?.gust} km/h`,
       },
       {
-        icon: <WindIcon />,
+        icon:<img src={iconRain} style={{ width: "25px", height: "25px" }} />,
         type: "Rain Chance",
         currentValue: "0%",
         dynamicValue: "0%",
       },
       {
-        icon: <WindIcon />,
+        icon: <img src={iconTemperature} style={{ width: "25px", height: "25px" }} />,
         type: "Temperature",
         currentValue: `${Math.round(main?.temp)}°C`,
         dynamicValue: `${main?.temp_min}°C ↑`,
       },
       {
-        icon: <WindIcon />,
+        icon: <img src={iconHumidity} style={{ width: "25px", height: "25px" }} />,
         type: "Humidity",
         currentValue: `${main?.humidity}%`,
         dynamicValue: `${main?.humidity}%`,

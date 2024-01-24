@@ -26,7 +26,7 @@ const MySidebar = ({ sys, name, main }) => {
   }, [getTime, sys?.sunrise, sys?.sunset]);
 
   return (
-    <div className="my-3 py-4 px-3 pb-5 d-flex flex-column gap-5 border border-1 rounded-3">
+    <div className="my-0 my-md-2 py-5 px-3 pb-4 d-flex flex-column gap-5 border border-1 rounded-3">
       <div className="d-flex justify-content-between ">
         <p className="m-0">{name}</p>
         <p className="m-0">{getTime(new Date().getTime())}</p>

@@ -8,8 +8,8 @@ import { cities } from "../../store/mocks/weatherMock";
 const MyNavbar = ({ date, onChange }) => {
 
   return (
-    <Container className="px-0 mx-0 ">
-      <Navbar className="border border-1 rounded-3 mx-1 px-1">
+    <div>
+      <Navbar className="border border-1 rounded-3 ">
         <Container>
           <div className="row d-flex justify-content-between w-100 align-content-center">
             <div className="col-6 d-flex align-content-center">
@@ -36,7 +36,7 @@ const MyNavbar = ({ date, onChange }) => {
           </div>
         </Container>
       </Navbar>
-    </Container>
+    </div>
   );
 };
 
