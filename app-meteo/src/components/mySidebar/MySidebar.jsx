@@ -26,20 +26,20 @@ const MySidebar = ({ sys, name, main }) => {
   }, [getTime, sys?.sunrise, sys?.sunset]);
 
   return (
-    <div className="my-0 my-md-2 py-5 px-3 pb-4 d-flex flex-column gap-5 border border-1 rounded-3">
+    <div className="my-0 my-md-2 py-1 py-md-4 px-3  d-flex flex-column  gap-1 gap-md-4 border border-1 rounded-3">
       <div className="d-flex justify-content-between ">
-        <p className="m-0">{name}</p>
-        <p className="m-0">{getTime(new Date().getTime())}</p>
+        <p className="my-2">{name}</p>
+        <p className="my-2">{getTime(new Date().getTime())}</p>
       </div>
       <div>
         <h5 className="my-0 ">{`${Math.round(main?.temp)}°C`}</h5>
         <p className="mb-2 "> scattered clouds </p>
-        <hr className="m-0 " />
+        <hr className="my-1 " />
       </div>
       <div>
         <p className=" m-0 p-0"> Sunrise & Sunset </p>
       </div>
-      <div className=" d-flex flex-column gap-3">
+      <div className=" d-flex flex-column gap-3 my-2">
         {cardData2.map((card, i) => (
           <div key={i}>
             <MyCard {...card} />

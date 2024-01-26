@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useMemo } from "react";
-import { WindIcon } from "../../assets/icons/WindIcon";
 import MyCard from "../../components/myCard/MyCard";
 import NavbarBrand from "react-bootstrap/esm/NavbarBrand";
 import CloseButton from "react-bootstrap/esm/CloseButton";
@@ -9,13 +8,15 @@ import CloseButton from "react-bootstrap/esm/CloseButton";
 import { useNavigate } from "react-router-dom";
 import iconWind from "../../assets/icons/storm.png";
 import MyTable from "../../components/myTable/MyTable";
- import iconTemperature from "../../assets/icons/temperature.png"; 
- import iconSunrise from "../../assets/icons/sunrise (1).png"; 
- import iconSunset from "../../assets/icons/sunset.png"; 
- import iconRain from "../../assets/icons/rain.png"; 
- import iconHumidity from "../../assets/icons/humidity.png"; 
+import iconTemperature from "../../assets/icons/temperature.png";
+import iconSunrise from "../../assets/icons/sunrise (1).png";
+import iconSunset from "../../assets/icons/sunset.png";
+import iconRain from "../../assets/icons/rain.png";
+import iconHumidity from "../../assets/icons/humidity.png";
+import { Line } from "react-chartjs-2";
 
 const ResultPage = () => {
+  // assegniamo alle costanti i valori delle risposte delle chiamate di rete
   const weather = useSelector((state) => state.meteo.weather);
   const forecast = useSelector((state) => state.meteo.forecast);
   const navigate = useNavigate();
@@ -28,18 +29,21 @@ const ResultPage = () => {
   const getTime = useCallback((time) => {
     return `${new Date(time).getHours()}:${new Date(time).getMinutes()}`;
   }, []);
-  
 
   const cardData3 = useMemo(() => {
     return [
       {
-        icon: <img src={iconSunrise} style={{ width: "25px", height: "25px" }} />,
+        icon: (
+          <img src={iconSunrise} style={{ width: "25px", height: "25px" }} />
+        ),
         type: "sunrise",
         currentValue: `${getTime(sys?.sunrise)} `,
         dynamicValue: `2 hours ago`,
       },
       {
-        icon: <img src={iconSunset} style={{ width: "30px", height: "30px" }} />,
+        icon: (
+          <img src={iconSunset} style={{ width: "30px", height: "30px" }} />
+        ),
         type: "sunset",
         currentValue: `${getTime(sys?.sunset)}`,
         dynamicValue: `In 8 hours`,
@@ -51,19 +55,26 @@ const ResultPage = () => {
         dynamicValue: `${wind?.gust} km/h`,
       },
       {
-        icon:<img src={iconRain} style={{ width: "25px", height: "25px" }} />,
+        icon: <img src={iconRain} style={{ width: "25px", height: "25px" }} />,
         type: "Rain Chance",
         currentValue: "0%",
         dynamicValue: "0%",
       },
       {
-        icon: <img src={iconTemperature} style={{ width: "25px", height: "25px" }} />,
+        icon: (
+          <img
+            src={iconTemperature}
+            style={{ width: "25px", height: "25px" }}
+          />
+        ),
         type: "Temperature",
         currentValue: `${Math.round(main?.temp)}°C`,
         dynamicValue: `${main?.temp_min}°C ↑`,
       },
       {
-        icon: <img src={iconHumidity} style={{ width: "25px", height: "25px" }} />,
+        icon: (
+          <img src={iconHumidity} style={{ width: "25px", height: "25px" }} />
+        ),
         type: "Humidity",
         currentValue: `${main?.humidity}%`,
         dynamicValue: `${main?.humidity}%`,
@@ -71,12 +82,31 @@ const ResultPage = () => {
     ];
   }, [getTime, sys?.sunrise, sys?.sunset]);
 
-  console.log("data weather ", weather);
-  console.log("data forecast ", forecast, new Date(1705676400).getDay());
+  /* console.log("data weather ", weather);
+  console.log("data forecast ", forecast, new Date(1705676400).getDay()); */
+
+  const forecastList = forecast.list || []; // qui è necessario tenere un or [] perche il dato viene dal sevizio quindi all'in it sarà undefined
+
+  const forecastListFiltered = []; // lista di appoggio
+
+  forecastList?.forEach((element) => {
+    // trovo il nome del giorno
+    let dayName = new Date(element?.dt * 1000).toDateString().slice(0, 3);
+
+    // controllo se il nome del giorno esiste già nella lista di appoggo
+    const existDayName = forecastListFiltered.find(
+      (filtered) => filtered.dayName === dayName
+    );
+
+    if (!existDayName) {
+      // pusco solo i giorni che non esistono nella lista di appoggio
+      forecastListFiltered.push({ dayName, element }); // in questo oggetto avrò il nome del giorno e tutti i dettagli afferenti al giono (temperature, umidità ecc.)
+    }
+  });
 
   return (
     <div className="container py-3 " style={{ height: "90vh" }}>
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between py-1 mb-3">
         <NavbarBrand href="/">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -91,15 +121,16 @@ const ResultPage = () => {
           </svg>{" "}
           HOME
         </NavbarBrand>
-
-        <h1>{name}</h1>
+        <div className="mt-4 d-flex justify-content-center ">
+          <h1 style={{whiteSpace:'nowrap'}}>{name}</h1>
+        </div>
 
         <div className="d-flex gap-2 text-center">
           <p>{getTime(new Date().getTime())}</p>
           <CloseButton onClick={() => navigate("/")} />
         </div>
       </div>
-      <div className=" d-flex flex-wrap gap-3 justify-content-center my-3">
+      <div className=" d-flex flex-wrap gap-3 justify-content-center mt-3 mb-5">
         {cardData3.map((card, i) => (
           <div
             key={i}
@@ -115,20 +146,19 @@ const ResultPage = () => {
         ))}
       </div>
       <div>
-        {currentDays?.map((li, i) => {
-        let day= new Date(li?.dt*1000).toDateString().slice(0,3)
-         return(
-          <div key={i} >
-            <MyTable
-              day={day} 
-              humidity={li?.main.humidity}
-              icon1={li?.weather[0].icon}
-              tempMax={li?.main.temp_max}
-              tempMin={li?.main.temp_min}
-            />
-          </div>
-         )
-          
+        {forecastListFiltered?.map((li, i) => {
+          return (
+            <div key={i}>
+              <MyTable
+                day={li?.dayName}
+                humidity={li?.element.main.humidity}
+                icon1={li?.element.weather[0].icon}
+                tempMax={li?.element.main.temp_max}
+                tempMin={li?.element.main.temp_min}
+                className="px-1"
+              />
+            </div>
+          );
         })}
       </div>
     </div>
