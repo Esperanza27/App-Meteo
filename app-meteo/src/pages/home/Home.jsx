@@ -9,6 +9,7 @@ import { weatherThunk, forecastThunk } from "../../store/meteoThunks";
 import { MyLoader } from "../../components/myLoader/MyLoader";
 import { useNavigate } from "react-router-dom";
 import MyGraphic from "../../components/myGraphic/MyGraphic";
+import "./myHome.css";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -25,11 +26,7 @@ const Home = () => {
     }
   }, [dispatch, weather]);
 
-  const forecast = useSelector((state) => state.meteo.forecast);
-  /* //dati per graphic
-  const dataF= {...forecast};
-  const dataForecast= dataF.list.slice(0, 7);
-  console.log(dataForecast.temp); */
+  
 
   const navigate = useNavigate();
 
@@ -103,33 +100,23 @@ const Home = () => {
   }
 
   return (
-    <div className="container-fluid" /* style={{ height: "90vh" }} */>
-      <div className="row" style={{ height: "100%" }}>
+    <div className="container-fluid " /* style={{ height: "90vh" }} */>
+      <div className="row" /* style={{ height: "99vh" }} */>
         <div className="col-sm-12">
-          <div className="row " style={{ height: "100%" }}>
+          <div className="row " /* style={{ height: "100%" }} */>
             <div className="col-xs-12 d-flex flex-column gap-1 my-2 col-md-8">
               <div className="row ">
                 <MyNavbar date={dateToday} onChange={onChange} />
               </div>
               <div
-                className="row "
-                style={{
-                  height: "40%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+                className="row d-flex justify-content-center align-items-center"
+                
               >
                 {cardData.map((card, i) => (
                   <div
                     key={i}
-                    className="col-xs-10 py-0 d-flex"
-                    style={{
-                      width: "49.5%",
-                      alignItems: "center",
-                      height: "46.5%",
-                      margin: "1px"
-                    }}
+                    className="col-xs-10 d-flex align-items-center cards py-1 "
+                    
                   >
                     <MyCard {...card} />
                   </div>
@@ -137,9 +124,7 @@ const Home = () => {
               </div>
 
               <div
-                className="row text-center m-0 d-flex justify-content-center border rounded h-50"
-                /* style={{ height: "34%" }} */
-              >
+                className="row text-center m-0 d-flex justify-content-center border rounded d-flex align-items-stretch">
                 <MyGraphic />
               </div>
             </div>
